@@ -32,4 +32,5 @@ jobs:
           command: mvn test
       
       - codecov/upload:
+          conf: codecov.yml
           file: target/site/jacoco/jacoco.xml
