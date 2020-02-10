@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController
 class ApplicantController {
 
     @PostMapping("/application")
-    fun storeApplication(@ModelAttribute application: Application) : DatabaseApplication {
-        var applicationService = ApplicationService
+    fun storeApplication(@ModelAttribute application: Application,applicationService : ApplicationService) : DatabaseApplication {
+//        var applicationService : ApplicationService
         var databaseApplication : DatabaseApplication = applicationService.addApplicant(application)
-        return application
+        return databaseApplication
     }
 }
