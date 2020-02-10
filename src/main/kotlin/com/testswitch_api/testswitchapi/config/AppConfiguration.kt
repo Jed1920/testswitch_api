@@ -1,6 +1,7 @@
 package com.testswitch_api.testswitchapi.config
 
 import org.jdbi.v3.core.Jdbi
+import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -21,7 +22,7 @@ class AppConfiguration {
 
     @Bean
     fun getJdbi(): Jdbi{
-        val jdbi = Jdbi.create(getDataSource())
+        val jdbi = Jdbi.create(getDataSource()).installPlugin(KotlinPlugin())
         return jdbi
     }
 }

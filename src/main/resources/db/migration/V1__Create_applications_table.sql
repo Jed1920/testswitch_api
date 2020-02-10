@@ -3,5 +3,5 @@ create table applications (
     name varchar(100) NOT NULL,
     email varchar(100) NOT NULL,
     contact_info varchar(100),
-    exprience varchar(50)
+    experience varchar(50)
 );
