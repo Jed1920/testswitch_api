@@ -2,11 +2,15 @@ package com.testswitch_api.testswitchapi.Services
 
 import com.testswitch_api.testswitchapi.Models.Application
 import com.testswitch_api.testswitchapi.Models.DatabaseApplication
+import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.mapTo
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class ApplicationService():DatabaseService(){
+class ApplicationService @Autowired constructor(
+        private val jdbi: Jdbi
+){
 
     fun addApplicant(application: Application):DatabaseApplication{
         val names : DatabaseApplication = jdbi.withHandle<DatabaseApplication, RuntimeException> { handle ->
