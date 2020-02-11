@@ -7,4 +7,4 @@ coverage:
         default:
           target: 100%
 ignore:
-  -"src/main/kotlin/com/testswitch_api/testswitchapi/config/AppConfiguration.kt"
+    -"src/main/kotlin/com/testswitch_api/testswitchapi/config/AppConfiguration.kt"
