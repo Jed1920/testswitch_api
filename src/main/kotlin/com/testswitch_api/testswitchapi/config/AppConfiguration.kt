@@ -5,12 +5,14 @@ import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import javax.sql.DataSource
 
 @Configuration
 class AppConfiguration {
 
     @Bean
+    @Profile("productionDataSource")
     fun getDataSource(): DataSource {
         val dataSourceBuilder = DataSourceBuilder.create()
         dataSourceBuilder.driverClassName("org.postgresql.Driver")
