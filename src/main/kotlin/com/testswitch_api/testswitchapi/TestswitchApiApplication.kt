@@ -9,7 +9,3 @@ class TestswitchApiApplication
 fun main(args: Array<String>) {
 	runApplication<TestswitchApiApplication>(*args)
 }
-
-fun test(testNumber: Int): Int {
-	return testNumber + testNumber;
-}
