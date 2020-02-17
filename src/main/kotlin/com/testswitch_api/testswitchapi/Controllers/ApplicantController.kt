@@ -3,8 +3,6 @@ package com.testswitch_api.testswitchapi.Controllers
 import com.testswitch_api.testswitchapi.Models.Application
 import com.testswitch_api.testswitchapi.Models.DatabaseApplication
 import com.testswitch_api.testswitchapi.Services.ApplicationService
-import org.jdbi.v3.core.Jdbi
-import org.omg.CORBA.DATA_CONVERSION
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
