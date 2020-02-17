@@ -5,13 +5,11 @@ import com.testswitch_api.testswitchapi.Models.DatabaseApplication
 import com.testswitch_api.testswitchapi.Services.ApplicationService
 import org.jdbi.v3.core.Jdbi
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/application")
+@CrossOrigin("http://localhost:3000")
 class ApplicantController @Autowired constructor(
         private val applicationService : ApplicationService
 ){
