@@ -46,16 +46,6 @@ internal class ApplicantControllerTest {
     }
 
     @Test
-    fun addApplicantEndpointReturnsStatusOk() {
-        mockMvc.perform(post("/application/add")
-                .param("name", "John Cena")
-                .param("email", "itsjohn@cena.com")
-                .param("contactInfo", "03212553422")
-                .param("experience", "BEGINNER"))
-                .andExpect(MockMvcResultMatchers.status().isOk)
-    }
-
-    @Test
     fun getAllApplicantsEndpointReturnsListOfApplicants(){
         val objectMapper = jacksonObjectMapper()
         val endpointResponse = mockMvc.perform(get("/application/get_all"))
@@ -65,6 +55,16 @@ internal class ApplicantControllerTest {
         var mockResponse = objectMapper.readValue<List<DatabaseApplication>>(response)
         assertThat(mockResponse.size).isGreaterThanOrEqualTo(3)
         assertThat(mockResponse[0].name).isEqualTo("James May")
+    }
+
+    @Test
+    fun addApplicantEndpointReturnsStatusOk() {
+        mockMvc.perform(post("/application/add")
+                .param("name", "John Cena")
+                .param("email", "itsjohn@cena.com")
+                .param("contactInfo", "03212553422")
+                .param("experience", "BEGINNER"))
+                .andExpect(MockMvcResultMatchers.status().isOk)
     }
 
     @Test
