@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.testswitch_api.testswitchapi.AppTestConfiguration
 import com.testswitch_api.testswitchapi.Models.Application
+import com.testswitch_api.testswitchapi.Models.ApplicationState
 import com.testswitch_api.testswitchapi.Models.DatabaseApplication
 import org.assertj.core.api.Assertions.assertThat
 import org.jdbi.v3.core.Jdbi
@@ -44,7 +45,6 @@ internal class ApplicantControllerTest {
         addFakeApplicant2()
     }
 
-
     @Test
     fun addApplicantEndpointReturnsStatusOk() {
         mockMvc.perform(post("/application/add")
@@ -76,6 +76,17 @@ internal class ApplicantControllerTest {
         val response = endpointResponse.response.getContentAsString()
         var mockResponse = objectMapper.readValue<DatabaseApplication>(response)
         assertThat(mockResponse.name).isEqualTo("Tom Jones")
+    }
+
+    @Test
+    fun updateStateEndpointReturnsUpdatedApplicant(){
+        val objectMapper = jacksonObjectMapper()
+        val endpointResponse = mockMvc.perform(get("/application/change_state/3/ACCEPTED"))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andReturn()
+        val response = endpointResponse.response.getContentAsString()
+        var mockResponse = objectMapper.readValue<DatabaseApplication>(response)
+        assertThat(mockResponse.applicationState).isEqualTo(ApplicationState.ACCEPTED)
     }
 
     fun addFakeApplicant1() {
