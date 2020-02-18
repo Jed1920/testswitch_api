@@ -1,7 +1,7 @@
 drop table applications;
+drop type application_state;
 
-CREATE TYPE application_state AS ENUM('NEW','SENT','COMPLETED','REJECTED');
-CREATE TYPE experience_level AS ENUM('NONE','BEGINNER','INTERMEDIATE','EXPERT');
+CREATE TYPE application_state AS ENUM('NEW','SENT','COMPLETED','EXPIRED','ACCEPTED','REJECTED');
 
 create table applications (
     id serial PRIMARY KEY,
