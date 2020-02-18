@@ -16,7 +16,7 @@ class AppConfiguration {
     fun getDataSource(): DataSource {
         val dataSourceBuilder = DataSourceBuilder.create()
         dataSourceBuilder.driverClassName("org.postgresql.Driver")
-        dataSourceBuilder.url("jdbc:postgresql://localhost:5432/testswitch")
+        dataSourceBuilder.url(System.getenv("DATABASE_URL"))
         dataSourceBuilder.username("postgres")
         dataSourceBuilder.password("techswitch")
         return dataSourceBuilder.build()
