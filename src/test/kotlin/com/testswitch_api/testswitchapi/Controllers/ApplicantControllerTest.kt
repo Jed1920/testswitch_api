@@ -39,9 +39,9 @@ internal class ApplicantControllerTest {
 
     @BeforeAll
     internal fun populateTable(){
-        addFakeApplicant()
-        addFakeApplicant()
-        addFakeApplicant()
+        addFakeApplicant1()
+        addFakeApplicant1()
+        addFakeApplicant2()
     }
 
 
@@ -51,7 +51,7 @@ internal class ApplicantControllerTest {
                 .param("name", "John Cena")
                 .param("email", "itsjohn@cena.com")
                 .param("contactInfo", "03212553422")
-                .param("experience", "Beginner"))
+                .param("experience", "BEGINNER"))
                 .andExpect(MockMvcResultMatchers.status().isOk)
     }
 
@@ -67,15 +67,38 @@ internal class ApplicantControllerTest {
         assertThat(mockResponse[0].name).isEqualTo("James May")
     }
 
+    @Test
+    fun getIndividualApplicantEndpointReturnsApplicant(){
+        val objectMapper = jacksonObjectMapper()
+        val endpointResponse = mockMvc.perform(get("/application/get_applicant/3"))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andReturn()
+        val response = endpointResponse.response.getContentAsString()
+        var mockResponse = objectMapper.readValue<DatabaseApplication>(response)
+        assertThat(mockResponse.name).isEqualTo("Tom Jones")
+    }
 
-    fun addFakeApplicant(){
+    fun addFakeApplicant1() {
+        jdbi.useHandle<RuntimeException> { handle ->
+            (
+                    handle.createUpdate("INSERT INTO applications(name, email,contact_info,experience) " +
+                            "VALUES(:name,:email,:contactInfo,:experience::experience_level)")
+                            .bind("name", "James May")
+                            .bind("email", "jimmyM@top.ge")
+                            .bind("contactInfo", "0284819123")
+                            .bind("experience", "INTERMEDIATE")
+                            .execute()
+                    )
+        }
+    }
+        fun addFakeApplicant2(){
         jdbi.useHandle<RuntimeException> {handle ->(
             handle.createUpdate("INSERT INTO applications(name, email,contact_info,experience) " +
-                    "VALUES(:name,:email,:contactInfo,:experience)")
-                    .bind("name","James May")
-                    .bind("email","jimmyM@top.ge")
-                    .bind("contactInfo","0284819123")
-                    .bind("experience","No Experience")
+                    "VALUES(:name,:email,:contactInfo,:experience::experience_level)")
+                    .bind("name","Tom Jones")
+                    .bind("email","tomjones@wales.dr")
+                    .bind("contactInfo","48984932")
+                    .bind("experience","BEGINNER")
                     .execute()
                 )
         }
