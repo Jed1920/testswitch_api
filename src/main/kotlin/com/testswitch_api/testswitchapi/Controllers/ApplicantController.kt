@@ -25,4 +25,9 @@ class ApplicantController @Autowired constructor(
         return applicationService.getAllApplicants()
     }
 
+    @GetMapping("/get_applicant/{id}")
+    fun getAllApplications(@PathVariable id: Integer) : DatabaseApplication{
+        return applicationService.getApplicantById(id)
+    }
+
 }
