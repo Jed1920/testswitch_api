@@ -35,5 +35,4 @@ class ApplicantController @Autowired constructor(
     fun updateApplicationstate(@PathVariable id:Integer, @PathVariable state: ApplicationState) : DatabaseApplication{
         return applicationService.updateApplicationState(id,state)
     }
-
 }
