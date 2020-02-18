@@ -7,6 +7,8 @@ enum class ApplicationState() {
     NEW,
     SENT,
     COMPLETED,
+    EXPIRED,
+    ACCEPTED,
     REJECTED
 }
 
