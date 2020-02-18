@@ -1,6 +1,7 @@
 package com.testswitch_api.testswitchapi.Services
 
 import com.testswitch_api.testswitchapi.Models.Application
+import com.testswitch_api.testswitchapi.Models.ApplicationState
 import com.testswitch_api.testswitchapi.Models.DatabaseApplication
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.mapTo
@@ -30,6 +31,16 @@ class ApplicationService @Autowired constructor(
                     .mapTo<DatabaseApplication>()
                     .list())
         }
+    }
+
+    fun updateApplicationState(id: Integer, state: ApplicationState): DatabaseApplication{
+        jdbi.useHandle<RuntimeException> { handle ->
+            handle.createUpdate("UPDATE applications SET application_state = :state::application_state WHERE id = :id;")
+                    .bind("state", state)
+                    .bind("id", id)
+                    .execute()
+        }
+        return getApplicantById(id)
     }
 
     fun getApplicantById(id: Integer): DatabaseApplication {
