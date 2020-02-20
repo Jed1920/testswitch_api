@@ -3,6 +3,7 @@ package com.testswitch_api.testswitchapi.Controllers
 import com.testswitch_api.testswitchapi.Models.Application
 import com.testswitch_api.testswitchapi.Models.ApplicationState
 import com.testswitch_api.testswitchapi.Models.DatabaseApplication
+import com.testswitch_api.testswitchapi.Models.Example
 import com.testswitch_api.testswitchapi.Services.ApplicationService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -34,5 +35,11 @@ class ApplicantController @Autowired constructor(
     @GetMapping("/change_state/{id}/{state}")
     fun updateApplicationstate(@PathVariable id:Integer, @PathVariable state: ApplicationState) : DatabaseApplication{
         return applicationService.updateApplicationState(id,state)
+    }
+
+    @GetMapping("/example")
+    fun example(){
+        val example = Example()
+        example.sendEmail()
     }
 }
