@@ -27,7 +27,7 @@ class ApplicationService @Autowired constructor(
 
     fun getAllApplicants(): List<DatabaseApplication> {
         return jdbi.withHandle<List<DatabaseApplication>, RuntimeException> { handle ->
-            (handle.createQuery("SELECT * FROM applications")
+            (handle.createQuery("SELECT * FROM applications ORDER BY application_state;")
                     .mapTo<DatabaseApplication>()
                     .list())
         }
