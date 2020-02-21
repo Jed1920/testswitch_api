@@ -6,7 +6,11 @@ import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.mail.javamail.JavaMailSenderImpl
+import java.util.*
 import javax.sql.DataSource
+
 
 @Configuration
 class AppConfiguration {
@@ -26,5 +30,20 @@ class AppConfiguration {
     fun getJdbi(): Jdbi{
         val jdbi = Jdbi.create(getDataSource()).installPlugin(KotlinPlugin())
         return jdbi
+    }
+
+    @Bean
+    fun getJavaMailSender(): JavaMailSender? {
+        val mailSender = JavaMailSenderImpl()
+        mailSender.host = "smtp.gmail.com"
+        mailSender.port = 587
+        mailSender.username = "webapp1920@gmail.com"
+        mailSender.password = "qmbvznzfwxlqyduh"
+        val props: Properties = mailSender.javaMailProperties
+        props.put("mail.transport.protocol", "smtp")
+        props.put("mail.smtp.auth", "true")
+        props.put("mail.smtp.starttls.enable", "true")
+        props.put("mail.debug", "true")
+        return mailSender
     }
 }
