@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class ApplicationService @Autowired constructor(
-        private val jdbi: Jdbi
+        private val jdbi: Jdbi,
+        private val emailService: EmailService
 ) {
 
     fun addApplicant(application: Application) {
@@ -37,10 +38,12 @@ class ApplicationService @Autowired constructor(
 
     fun updateApplicationState(id: Integer, state: ApplicationState): DatabaseApplication{
         if(state == ApplicationState.SENT){
+            var testString : String = randomString();
+            emailService.sendSimpleMessage(getApplicantById(id).email,"Testswitch - Application Test","${System.getenv("UI_URL")}/test/${testString}")
             jdbi.useHandle<RuntimeException> { handle ->
                 handle.createUpdate("INSERT INTO sent_tests(id, test_string) VALUES(:id,:testString);")
                         .bind("id", id)
-                        .bind("testString", randomString())
+                        .bind("testString", testString)
                         .execute()
             }
         }
