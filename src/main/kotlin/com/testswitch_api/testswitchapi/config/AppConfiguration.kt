@@ -38,7 +38,7 @@ class AppConfiguration {
         mailSender.host = "smtp.gmail.com"
         mailSender.port = 587
         mailSender.username = "webapp1920@gmail.com"
-        mailSender.password = "qmbvznzfwxlqyduh"
+        mailSender.password = System.getenv("GOOGLE_APP_PASSWORD")
         val props: Properties = mailSender.javaMailProperties
         props.put("mail.transport.protocol", "smtp")
         props.put("mail.smtp.auth", "true")
