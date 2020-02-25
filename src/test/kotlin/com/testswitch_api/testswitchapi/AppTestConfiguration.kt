@@ -16,5 +16,4 @@ class AppTestConfiguration {
         val postgres = EmbeddedPostgres.builder().start()
         return postgres.postgresDatabase
     }
-
 }
