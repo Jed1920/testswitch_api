@@ -36,7 +36,7 @@ class ApplicationService @Autowired constructor(
         }
     }
 
-    fun updateApplicationState(id: Integer, state: ApplicationState): DatabaseApplication{
+    fun updateApplicationState(id: Integer, state: ApplicationState){
         if(state == ApplicationState.SENT){
             var testString : String = randomString();
             emailService.sendSimpleMessage(getApplicantById(id).email,"Testswitch - Application Test","${System.getenv("UI_URL")}/test/${testString}")
@@ -53,7 +53,6 @@ class ApplicationService @Autowired constructor(
                     .bind("id", id)
                     .execute()
         }
-        return getApplicantById(id)
     }
 
     fun getApplicantById(id: Integer): DatabaseApplication {
@@ -61,6 +60,15 @@ class ApplicationService @Autowired constructor(
             (handle.createQuery("SELECT * FROM applications WHERE id = :id")
                     .bind("id",id)
                     .mapTo<DatabaseApplication>()
+                    .one())
+        }
+    }
+
+    fun getApplicationIdByIdString(testString : String):Integer {
+        return jdbi.withHandle<Integer, RuntimeException> { handle ->
+            (handle.createQuery("SELECT * FROM sent_tests WHERE test_string = :testString")
+                    .bind("testString", testString)
+                    .mapTo<Integer>()
                     .one())
         }
     }

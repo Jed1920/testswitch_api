@@ -33,6 +33,13 @@ class ApplicantController @Autowired constructor(
 
     @GetMapping("/change_state/{id}/{state}")
     fun updateApplicationstate(@PathVariable id:Integer, @PathVariable state: ApplicationState) : DatabaseApplication{
-        return applicationService.updateApplicationState(id,state)
+        applicationService.updateApplicationState(id,state)
+        return applicationService.getApplicantById(id)
+    }
+
+    @GetMapping("/test/{testString}")
+    fun getApplicantTest(@PathVariable testString:String) : DatabaseApplication{
+        var applicationId = applicationService.getApplicationIdByIdString(testString)
+        return applicationService.getApplicantById(applicationId)
     }
 }
