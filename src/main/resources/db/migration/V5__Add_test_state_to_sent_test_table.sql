@@ -1,0 +1,1 @@
+ALTER TABLE sent_tests ADD COLUMN test_state application_state;
