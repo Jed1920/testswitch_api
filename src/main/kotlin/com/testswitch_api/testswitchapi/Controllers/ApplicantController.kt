@@ -38,8 +38,12 @@ class ApplicantController @Autowired constructor(
     }
 
     @GetMapping("/test/{testString}")
-    fun getApplicantTest(@PathVariable testString:String) : DatabaseApplication{
-        var applicationId = applicationService.getApplicationIdByIdString(testString)
-        return applicationService.getApplicantById(applicationId)
+    fun getApplicantTest(@PathVariable testString:String) : ResponseEntity<Any>{
+        try {
+            var applicationId = applicationService.getApplicationIdByTestString(testString)
+            return ResponseEntity.ok().body(applicationService.getApplicantById(applicationId))
+        } catch(e: Exception) {
+            return ResponseEntity.notFound().build()
+        }
     }
 }

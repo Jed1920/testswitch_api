@@ -63,7 +63,7 @@ class ApplicationService constructor(
         }
     }
 
-    fun getApplicationIdByIdString(testString: String): Int {
+    fun getApplicationIdByTestString(testString: String): Int {
         return jdbi.withHandle<Int, RuntimeException> { handle ->
             (handle.createQuery("SELECT * FROM sent_tests WHERE test_string = :testString")
                     .bind("testString", testString)
