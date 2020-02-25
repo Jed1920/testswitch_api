@@ -128,6 +128,13 @@ internal class ApplicantControllerTest {
         assertThat(mockResponse.name).isEqualTo(application2.name)
     }
 
+    @Test
+    fun getApplicantTestEndpointReturns404NotFound() {
+        val objectMapper = jacksonObjectMapper()
+        val endpointResponse = mockMvc.perform(get("/application/test/wrong_string"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound)
+    }
+
     fun addFakeApplicant(applicant : Application) {
         jdbi.useHandle<RuntimeException> { handle ->
             (
