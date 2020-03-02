@@ -7,23 +7,40 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.mapTo
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 @Service
 class ApplicationService constructor(
         val jdbi: Jdbi,
-        val emailService: EmailService
+        val emailService: EmailService,
+        val uploadFile : UploadObject
 ) {
 
-    fun addApplicant(application: Application) {
+    fun addApplicant(application: Application, multiFile: MultipartFile?) {
+        print(multiFile != null)
         jdbi.useHandle<RuntimeException> { handle ->
-            handle.createUpdate("INSERT INTO applications(name, email,contact_info,experience)" +
-                    "VALUES(:name,:email,:contactInfo,:experience::experience_level);")
+            handle.createUpdate("INSERT INTO applications(name, email,contact_info,experience,cv)" +
+                    "VALUES(:name,:email,:contactInfo,:experience::experience_level,:cv);")
                     .bind("name", application.name)
                     .bind("email", application.email)
                     .bind("contactInfo", application.contactInfo)
                     .bind("experience", application.experience)
+                    .bind("cv", multiFile != null)
                     .execute()
+        }
+        if(multiFile != null) {
+            val applicationId : Int = jdbi.withHandle<Int, RuntimeException> { handle ->
+                (handle.createQuery("SELECT id FROM applications ORDER BY id DESC LIMIT 1;")
+                        .mapTo<Int>()
+                        .one())
+            }
+            var file = convertMultiFileToFile(multiFile)
+            uploadFile.uploadFile(application.name,applicationId, file)
+            file.delete()
         }
     }
 
@@ -70,6 +87,15 @@ class ApplicationService constructor(
                     .mapTo<Int>()
                     .one())
         }
+    }
+    @Throws(IOException::class)
+    fun convertMultiFileToFile(file: MultipartFile): File {
+        val convFile = File(file.originalFilename)
+        convFile.createNewFile()
+        val fos = FileOutputStream(convFile)
+        fos.write(file.bytes)
+        fos.close()
+        return convFile
     }
 
     fun randomString(): String {
