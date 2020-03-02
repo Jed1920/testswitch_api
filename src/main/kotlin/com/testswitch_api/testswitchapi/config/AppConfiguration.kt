@@ -1,5 +1,8 @@
 package com.testswitch_api.testswitchapi.config
 
+import com.amazonaws.regions.Regions
+import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.KotlinPlugin
 import org.springframework.boot.jdbc.DataSourceBuilder
@@ -31,6 +34,14 @@ class AppConfiguration {
         val jdbi = Jdbi.create(getDataSource()).installPlugin(KotlinPlugin())
         return jdbi
     }
+
+    @Bean
+    fun getS3Client() : AmazonS3 {
+        return AmazonS3ClientBuilder.standard()
+                .withRegion(Regions.EU_WEST_2)
+                .build()
+    }
+
 
     @Bean
     fun getJavaMailSender(): JavaMailSender? {
