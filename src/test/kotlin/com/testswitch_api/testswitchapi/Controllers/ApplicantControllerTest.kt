@@ -130,8 +130,7 @@ internal class ApplicantControllerTest {
 
     @Test
     fun getApplicantTestEndpointReturns404NotFound() {
-        val objectMapper = jacksonObjectMapper()
-        val endpointResponse = mockMvc.perform(get("/application/test/wrong_string"))
+        mockMvc.perform(get("/application/test/wrong_string"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
