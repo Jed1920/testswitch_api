@@ -9,5 +9,6 @@ create table applications (
     email varchar(100) NOT NULL,
     contact_info varchar(100),
     experience experience_level,
-    application_state application_state default 'NEW'
+    application_state application_state default 'NEW',
+    cv boolean default false
 );
