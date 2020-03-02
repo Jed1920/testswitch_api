@@ -8,18 +8,19 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.io.File
 import java.io.IOException
 
 @Service
 class UploadObject constructor (var s3Client : AmazonS3) {
     @Throws(IOException::class)
-    fun uploadFile() {
+    fun uploadFile(file : File) {
         val bucketName = System.getenv("AWS_BUCKET_NAME")
-        val fileObjKeyName = "FileTrial02"
+        val fileObjKeyName = "FileTrial04"
         val fileName = "C:/Users/jedjo/OneDrive/Documents/CV/Johnson_Jed_CV.pdf"
         try {
-            val request = PutObjectRequest(bucketName, fileObjKeyName, File(fileName))
+            val request = PutObjectRequest(bucketName, fileObjKeyName, file)
             val metadata = ObjectMetadata()
             metadata.setContentType("application/pdf")
             metadata.addUserMetadata("x-amz-meta-title", "TestSwitch Web App CVs")
