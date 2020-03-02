@@ -3,10 +3,7 @@ package com.testswitch_api.testswitchapi.Services
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.HttpMethod
 import com.amazonaws.SdkClientException
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import org.springframework.stereotype.Service
 import java.io.IOException
@@ -15,9 +12,8 @@ import java.util.*
 @Service
 class GenerateURL constructor (var s3Client : AmazonS3){
     @Throws(IOException::class)
-    fun generateUrl() : String{
+    fun generateUrl(objectKey : String) : String{
         val bucketName = System.getenv("AWS_BUCKET_NAME")
-        val objectKey = "FileTrial02"
         try {
             val expiration = Date()
             var expTimeMillis = expiration.time
