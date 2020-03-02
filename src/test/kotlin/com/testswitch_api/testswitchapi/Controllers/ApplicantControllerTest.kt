@@ -1,5 +1,6 @@
 package com.testswitch_api.testswitchapi.Controllers
 
+import com.amazonaws.services.s3.AmazonS3
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.testswitch_api.testswitchapi.AppTestConfiguration
@@ -9,6 +10,7 @@ import com.testswitch_api.testswitchapi.Models.DatabaseApplication
 import com.testswitch_api.testswitchapi.Models.ExperienceLevel
 import com.testswitch_api.testswitchapi.Services.ApplicationService
 import com.testswitch_api.testswitchapi.Services.EmailService
+import com.testswitch_api.testswitchapi.Services.UploadObject
 import org.assertj.core.api.Assertions.assertThat
 import org.jdbi.v3.core.Jdbi
 import org.jdbi.v3.core.kotlin.mapTo
@@ -28,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.web.multipart.MultipartFile
 
 
 @SpringBootTest
@@ -106,7 +109,11 @@ internal class ApplicantControllerTest {
         var message = SimpleMailMessage()
         Mockito.doNothing().`when`(javaMailSender).send(message)
         var emailService = EmailService(javaMailSender)
-        var applicationService = ApplicationService(jdbi, emailService)
+//        val s3Client = Mockito.mock(AmazonS3::class.java)
+//        var uploadObject = UploadObject(s3Client)
+//        Mockito.doNothing().`when`(uploadObject).uploadFile()
+        val uploadObject = Mockito.mock(UploadObject::class.java)
+        var applicationService = ApplicationService(jdbi, emailService,uploadObject)
         applicationService.updateApplicationState(1, ApplicationState.SENT)
 
         var testString = jdbi.withHandle<String, RuntimeException> { handle ->
