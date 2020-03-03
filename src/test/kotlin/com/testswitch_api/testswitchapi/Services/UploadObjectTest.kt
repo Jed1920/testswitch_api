@@ -1,0 +1,26 @@
+package com.testswitch_api.testswitchapi.Services
+
+import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.model.PutObjectRequest
+import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
+import java.io.File
+
+internal class UploadObjectTest{
+
+    @Test
+    fun uploadObjectTest(){
+        val s3Client = Mockito.mock(AmazonS3::class.java)
+
+        var uploadObject = UploadObject(s3Client)
+        val file = File("")
+        val name = "name"
+        val id = 1
+
+        uploadObject.uploadFile(name,id,file)
+
+        Mockito.verify(s3Client, Mockito.atLeastOnce()).putObject(any(PutObjectRequest::class.java))
+    }
+
+}

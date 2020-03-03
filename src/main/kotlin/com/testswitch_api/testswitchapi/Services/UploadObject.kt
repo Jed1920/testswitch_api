@@ -5,7 +5,6 @@ import com.amazonaws.SdkClientException
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
-import com.testswitch_api.testswitchapi.Models.DatabaseApplication
 import org.springframework.stereotype.Service
 import java.io.File
 import java.io.IOException
