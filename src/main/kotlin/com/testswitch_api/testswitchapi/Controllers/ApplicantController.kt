@@ -1,8 +1,6 @@
 package com.testswitch_api.testswitchapi.Controllers
 
-import com.testswitch_api.testswitchapi.Models.Application
-import com.testswitch_api.testswitchapi.Models.ApplicationState
-import com.testswitch_api.testswitchapi.Models.DatabaseApplication
+import com.testswitch_api.testswitchapi.Models.*
 import com.testswitch_api.testswitchapi.Services.ApplicationService
 import com.testswitch_api.testswitchapi.Services.GenerateURL
 import com.testswitch_api.testswitchapi.Services.UploadObject
@@ -21,9 +19,9 @@ class ApplicantController @Autowired constructor(
         private val generateUrl: GenerateURL
 ) {
     @PostMapping("/add")
-    fun storeApplication(@ModelAttribute application: Application, @ModelAttribute file: MultipartFile?): ResponseEntity<Any> {
+    fun storeApplication(@ModelAttribute application: Application, @ModelAttribute cvFile: MultipartFile?): ResponseEntity<Any> {
         try {
-            applicationService.addApplicant(application, file)
+            applicationService.addApplicant(application, cvFile)
             return ResponseEntity.ok().build()
         } catch (e: Exception) {
             return ResponseEntity.badRequest().build()
@@ -55,11 +53,15 @@ class ApplicantController @Autowired constructor(
             return ResponseEntity.notFound().build()
         }
     }
-    
-    @GetMapping("get_url/{objectKey}")
-    fun generateUrl(@PathVariable objectKey: String): ResponseEntity<Any> {
-        data class urlObject(var url: String)
 
-        return ResponseEntity.ok().body(urlObject(generateUrl.generateUrl(objectKey)))
+    @GetMapping("/get_url/{objectKey}")
+    fun generateUrl(@PathVariable objectKey: String): ResponseEntity<Any> {
+        val urlString = generateUrl.generateUrl(objectKey)
+        if(urlString == "Amazon"){
+            return ResponseEntity.badRequest().body(ErrorMessage("Error with Amazon Service"))
+        } else if (urlString == "SDK"){
+            return ResponseEntity.badRequest().body(ErrorMessage("Error with Server"))
+        }
+        return ResponseEntity.ok().body(UrlObject(urlString))
     }
 }

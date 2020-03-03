@@ -26,10 +26,10 @@ class GenerateURL constructor (var s3Client : AmazonS3){
             return url.toString()
         } catch (e: AmazonServiceException) {
             e.printStackTrace()
-            return ""
+            return "Amazon"
         } catch (e: SdkClientException) {
             e.printStackTrace()
-            return ""
+            return "SDK"
         }
     }
 }
