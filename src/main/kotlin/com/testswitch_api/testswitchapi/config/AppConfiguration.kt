@@ -36,6 +36,7 @@ class AppConfiguration {
     }
 
     @Bean
+    @Profile("productionAmazonS3")
     fun getS3Client() : AmazonS3 {
         return AmazonS3ClientBuilder.standard()
                 .withRegion(Regions.EU_WEST_2)
