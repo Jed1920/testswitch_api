@@ -31,7 +31,7 @@ internal class GenerateURLTest{
 
         val urlString = generateUrl.generateUrl("objectKey")
 
-        assertThat(urlString).isEqualTo("Error with Amazon Service")
+        assertThat(urlString).isEqualTo("Amazon")
     }
 
     @Test
@@ -43,6 +43,6 @@ internal class GenerateURLTest{
 
         val urlString = generateUrl.generateUrl("objectKey")
 
-        assertThat(urlString).isEqualTo("Error with Server")
+        assertThat(urlString).isEqualTo("SDK")
     }
 }

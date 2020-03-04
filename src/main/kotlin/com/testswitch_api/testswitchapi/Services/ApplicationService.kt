@@ -38,7 +38,7 @@ class ApplicationService constructor(
                         .mapTo<Int>()
                         .one())
             }
-            var file = convertMultiFileToFile(multiFile)
+            val file = convertMultiFileToFile(multiFile)
             uploadFile.uploadFile(application.name,applicationId, file)
             file.delete()
         }
@@ -54,7 +54,7 @@ class ApplicationService constructor(
 
     fun updateApplicationState(id: Int, state: ApplicationState) {
         if (state == ApplicationState.SENT) {
-            var testString: String = randomString();
+            val testString: String = randomString()
             emailService.sendSimpleMessage(getApplicantById(id).email, "Testswitch - Application Test", "${System.getenv("UI_URL")}/test/${testString}")
             jdbi.useHandle<RuntimeException> { handle ->
                 handle.createUpdate("INSERT INTO sent_tests(id, test_string) VALUES(:id,:testString);")
@@ -90,7 +90,7 @@ class ApplicationService constructor(
     }
     @Throws(IOException::class)
     fun convertMultiFileToFile(file: MultipartFile): File {
-        val convFile = File(file.originalFilename)
+        val convFile = File(file.originalFilename!!)
         convFile.createNewFile()
         val fos = FileOutputStream(convFile)
         fos.write(file.bytes)
@@ -99,6 +99,6 @@ class ApplicationService constructor(
     }
 
     fun randomString(): String {
-        return RandomStringUtils.randomAlphanumeric(32);
+        return RandomStringUtils.randomAlphanumeric(32)
     }
 }
