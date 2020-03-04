@@ -15,17 +15,16 @@ import org.springframework.web.multipart.MultipartFile
 @CrossOrigin("http://localhost:3000")
 class ApplicantController @Autowired constructor(
         private val applicationService: ApplicationService,
-        private val uploadFile: UploadObject,
         private val generateUrl: GenerateURL
 ) {
     @PostMapping("/add")
     fun storeApplication(@ModelAttribute application: Application, @ModelAttribute cvFile: MultipartFile?): ResponseEntity<Any> {
-        try {
+//        try {
             applicationService.addApplicant(application, cvFile)
             return ResponseEntity.ok().build()
-        } catch (e: Exception) {
-            return ResponseEntity.badRequest().build()
-        }
+//        } catch (e: Exception) {
+//            return ResponseEntity.badRequest().build()
+//        }
     }
 
     @GetMapping("/get_all")
