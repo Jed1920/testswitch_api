@@ -55,11 +55,15 @@ class ApplicantController @Autowired constructor(
 
     @GetMapping("/get_url/{objectKey}")
     fun generateUrl(@PathVariable objectKey: String): ResponseEntity<Any> {
-        val urlString = generateUrl.generateUrl(objectKey)
-        if(urlString == "Amazon"){
-            return ResponseEntity.badRequest().body(ErrorMessage("Error with Amazon Service"))
-        } else if (urlString == "SDK"){
-            return ResponseEntity.badRequest().body(ErrorMessage("Error with Server"))
+        var urlString : String? = generateUrl.getUrlStringByObjectKey(objectKey)
+
+        if(urlString == null) {
+            urlString = generateUrl.generateUrl(objectKey)
+            if (urlString == "Amazon") {
+                return ResponseEntity.badRequest().body(ErrorMessage("Error with Amazon Service"))
+            } else if (urlString == "SDK") {
+                return ResponseEntity.badRequest().body(ErrorMessage("Error with Server"))
+            }
         }
         return ResponseEntity.ok().body(UrlObject(urlString))
     }
