@@ -3,11 +3,11 @@ package com.testswitch_api.testswitchapi.Controllers
 import com.testswitch_api.testswitchapi.Models.*
 import com.testswitch_api.testswitchapi.Services.ApplicationService
 import com.testswitch_api.testswitchapi.Services.GenerateURL
-import com.testswitch_api.testswitchapi.Services.UploadObject
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import javax.validation.Valid
 
 
 @RestController
@@ -18,7 +18,7 @@ class ApplicantController @Autowired constructor(
         private val generateUrl: GenerateURL
 ) {
     @PostMapping("/add")
-    fun storeApplication(@ModelAttribute application: Application, @ModelAttribute cvFile: MultipartFile?): ResponseEntity<Any> {
+    fun storeApplication(@Valid @ModelAttribute application: Application, @ModelAttribute cvFile: MultipartFile?): ResponseEntity<Any> {
 //        try {
             applicationService.addApplicant(application, cvFile)
             return ResponseEntity.ok().build()
