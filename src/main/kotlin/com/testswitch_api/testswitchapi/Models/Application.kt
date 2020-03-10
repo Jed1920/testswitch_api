@@ -3,17 +3,16 @@ package com.testswitch_api.testswitchapi.Models
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 
-data class Application(@get: NotBlank(message = "{field.required}")
+data class Application(@field: NotBlank(message = "{field.required}")
                        val name: String,
 
-                       @get: NotBlank(message = "{field.required}")
-                       @get: Email(message = "{email.invalid}")
+                       @field: NotBlank(message = "{field.required}")
+                       @field: Email(message = "{email.invalid}")
                        val email: String,
 
-                       @get: NotBlank(message = "{field.required}")
+                       @field: NotBlank(message = "{field.required}")
                        val contactInfo: String,
 
-//                       @get: NotBlank(message = "{field.required}")
                        val experience: ExperienceLevel)
 
 
