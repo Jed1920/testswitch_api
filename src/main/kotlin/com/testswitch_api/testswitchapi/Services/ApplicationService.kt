@@ -16,13 +16,10 @@ import java.io.IOException
 
 @Service
 class ApplicationService constructor(
-        val jdbi: Jdbi,
-        val emailService: EmailService,
-        val uploadFile : UploadObject
+        val jdbi: Jdbi
 ) {
 
-    fun addApplicant(application: Application, multiFile: MultipartFile?) {
-        print(multiFile != null)
+    fun addApplicant(application: Application, cvAvailable: Boolean) {
         jdbi.useHandle<RuntimeException> { handle ->
             handle.createUpdate("INSERT INTO applications(name, email,contact_info,experience,cv)" +
                     "VALUES(:name,:email,:contactInfo,:experience::experience_level,:cv);")
@@ -30,18 +27,16 @@ class ApplicationService constructor(
                     .bind("email", application.email)
                     .bind("contactInfo", application.contactInfo)
                     .bind("experience", application.experience)
-                    .bind("cv", multiFile != null)
+                    .bind("cv", cvAvailable)
                     .execute()
         }
-        if(multiFile != null) {
-            val applicationId : Int = jdbi.withHandle<Int, RuntimeException> { handle ->
-                (handle.createQuery("SELECT id FROM applications ORDER BY id DESC LIMIT 1;")
-                        .mapTo<Int>()
-                        .one())
-            }
-            val file = convertMultiFileToFile(multiFile)
-            uploadFile.uploadFile(application.name,applicationId, file)
-            file.delete()
+    }
+
+    fun getLastApplicantEntry(): Int {
+        return jdbi.withHandle<Int, RuntimeException> { handle ->
+            (handle.createQuery("SELECT id FROM applications ORDER BY id DESC LIMIT 1;")
+                    .mapTo<Int>()
+                    .one())
         }
     }
 
@@ -54,20 +49,19 @@ class ApplicationService constructor(
     }
 
     fun updateApplicationState(id: Int, state: ApplicationState) {
-        if (state == ApplicationState.SENT) {
-            val testString: String = randomString()
-            emailService.sendSimpleMessage(getApplicantById(id).email, "Testswitch - Application Test", "${System.getenv("UI_URL")}/test/${testString}")
-            jdbi.useHandle<RuntimeException> { handle ->
-                handle.createUpdate("INSERT INTO sent_tests(id, test_string) VALUES(:id,:testString);")
-                        .bind("id", id)
-                        .bind("testString", testString)
-                        .execute()
-            }
-        }
         jdbi.useHandle<RuntimeException> { handle ->
             handle.createUpdate("UPDATE applications SET application_state = :state::application_state WHERE id = :id;")
                     .bind("state", state)
                     .bind("id", id)
+                    .execute()
+        }
+    }
+
+    fun sendApplicantTest(id: Int, testString: String) {
+        jdbi.useHandle<RuntimeException> { handle ->
+            handle.createUpdate("INSERT INTO sent_tests(id, test_string) VALUES(:id,:testString);")
+                    .bind("id", id)
+                    .bind("testString", testString)
                     .execute()
         }
     }
@@ -90,17 +84,4 @@ class ApplicationService constructor(
         }
     }
 
-    @Throws(IOException::class)
-    fun convertMultiFileToFile(file: MultipartFile): File {
-        val convFile = File(file.originalFilename!!)
-        convFile.createNewFile()
-        val fos = FileOutputStream(convFile)
-        fos.write(file.bytes)
-        fos.close()
-        return convFile
-    }
-
-    fun randomString(): String {
-        return RandomStringUtils.randomAlphanumeric(32)
-    }
 }

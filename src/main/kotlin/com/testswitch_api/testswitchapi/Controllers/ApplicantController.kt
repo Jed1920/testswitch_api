@@ -2,7 +2,10 @@ package com.testswitch_api.testswitchapi.Controllers
 
 import com.testswitch_api.testswitchapi.Models.*
 import com.testswitch_api.testswitchapi.Services.ApplicationService
+import com.testswitch_api.testswitchapi.Services.EmailService
 import com.testswitch_api.testswitchapi.Services.GenerateURL
+import com.testswitch_api.testswitchapi.Services.UploadObject
+import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -12,6 +15,9 @@ import org.springframework.validation.ObjectError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.*
 import java.util.function.Consumer
 import javax.validation.Valid
@@ -21,11 +27,18 @@ import javax.validation.Valid
 @CrossOrigin("http://localhost:3000")
 class ApplicantController @Autowired constructor(
         private val applicationService: ApplicationService,
-        private val generateUrl: GenerateURL
+        private val generateUrl: GenerateURL,
+        private val emailService: EmailService,
+        private val uploadObject: UploadObject
 ) {
-    @PostMapping("/add",consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun storeApplication(@Valid @RequestBody application: Application, @ModelAttribute cvFile: MultipartFile?): ResponseEntity<Any> {
-        applicationService.addApplicant(application, cvFile)
+    @PostMapping("/add", consumes = [MediaType.APPLICATION_JSON_VALUE])
+    fun storeApplication(@Valid @RequestBody application: Application, @ModelAttribute cvMultiFile: MultipartFile?): ResponseEntity<Any> {
+        val cvAvailable: Boolean = cvMultiFile != null
+        applicationService.addApplicant(application, cvAvailable)
+        if (cvAvailable) {
+            val applicationId: Int = applicationService.getLastApplicantEntry()
+            uploadObject.uploadFile(application.name, applicationId, cvMultiFile!!)
+        }
         return ResponseEntity.ok().build()
     }
 
@@ -40,26 +53,33 @@ class ApplicantController @Autowired constructor(
     }
 
     @GetMapping("/change_state/{id}/{state}")
-    fun updateApplicationstate(@PathVariable id: Int, @PathVariable state: ApplicationState): DatabaseApplication {
+    fun updateApplicationstate(@PathVariable id: Int, @PathVariable state: ApplicationState): ResponseEntity<Any>{
+        if (state == ApplicationState.SENT) {
+            val testString: String = randomString()
+            val email: String = applicationService.getApplicantById(id).email
+            val subject = "Testswitch - Application Test"
+            val body = "${System.getenv("UI_URL")}/test/${testString}"
+            emailService.sendSimpleMessage(email, subject, body)
+            applicationService.sendApplicantTest(id, testString)
+        }
         applicationService.updateApplicationState(id, state)
-        return applicationService.getApplicantById(id)
+        return ResponseEntity.ok().build()
     }
 
     @GetMapping("/test/{testString}")
     fun getApplicantTest(@PathVariable testString: String): ResponseEntity<Any> {
-        try {
-            var applicationId = applicationService.getApplicationIdByTestString(testString)
-            return ResponseEntity.ok().body(applicationService.getApplicantById(applicationId))
+        return try {
+            val applicationId = applicationService.getApplicationIdByTestString(testString)
+            ResponseEntity.ok().body(applicationService.getApplicantById(applicationId))
         } catch (e: Exception) {
-            return ResponseEntity.notFound().build()
+            ResponseEntity.notFound().build()
         }
     }
 
     @GetMapping("/get_url/{objectKey}")
     fun generateUrl(@PathVariable objectKey: String): ResponseEntity<Any> {
-        var urlString : String? = generateUrl.getUrlStringByObjectKey(objectKey)
-
-        if(urlString == null) {
+        var urlString: String? = generateUrl.getUrlStringByObjectKey(objectKey)
+        if (urlString == null) {
             urlString = generateUrl.generateUrl(objectKey)
             if (urlString == "Amazon") {
                 return ResponseEntity.badRequest().body(ErrorMessage("Error with Amazon Service"))
@@ -68,6 +88,10 @@ class ApplicantController @Autowired constructor(
             }
         }
         return ResponseEntity.ok().body(UrlObject(urlString))
+    }
+
+    fun randomString(): String {
+        return RandomStringUtils.randomAlphanumeric(32)
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
