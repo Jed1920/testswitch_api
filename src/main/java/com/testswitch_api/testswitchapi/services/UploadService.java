@@ -41,6 +41,8 @@ public class UploadService {
             e.printStackTrace();
         } catch (SdkClientException e) {
             e.printStackTrace();
+        } finally {
+            cvFile.delete();
         }
         return null;
     }

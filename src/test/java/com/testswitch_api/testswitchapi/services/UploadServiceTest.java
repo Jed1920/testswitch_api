@@ -34,7 +34,6 @@ class UploadServiceTest {
         UploadService uploadService = new UploadService(s3Client,"test s3 bucket name");
         MockMultipartFile multiFile = new MockMultipartFile("Test_CV","Test_CV","application/pdf","hello".getBytes());
         PutObjectResult result = uploadService.uploadFile("James Ashton",1, multiFile);
-
         assertThat(result).isNull();
         Mockito.verify(s3Client).putObject(any(PutObjectRequest.class));
     }
