@@ -60,9 +60,15 @@ public class AppConfiguration {
         return mailSender;
     }
 
-    @Bean
+    @Bean("uiUrlString")
     @Profile("productionUIUrl")
     public String getUIUrl() {
         return System.getenv("UI_URL");
+    }
+
+    @Bean("s3BucketName")
+    @Profile("productionBucketName")
+    public String getS3BucketName() {
+        return System.getenv("AWS_BUCKET_NAME");
     }
 }

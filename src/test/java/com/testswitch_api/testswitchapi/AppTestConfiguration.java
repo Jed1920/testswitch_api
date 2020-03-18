@@ -56,9 +56,15 @@ public class AppTestConfiguration {
 //        return mailSender;
 //    }
 
-    @Bean
+    @Bean("uiUrlString")
     @Profile("testUIUrl")
     public String getUIUrl() {
         return "test_UI_Url";
+    }
+
+    @Bean("s3BucketName")
+    @Profile("testBucketName")
+    public String getS3BucketName() {
+        return "testAmazonS3BucketName";
     }
 }

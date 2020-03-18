@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.testswitch_api.testswitchapi.models.DatabaseUrl;
 import org.jdbi.v3.core.Jdbi;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.net.URL;
 import java.util.*;
@@ -17,6 +18,7 @@ public class TestUrlService {
     private AmazonS3 s3Client;
     private Jdbi jdbi;
 
+    @Autowired
     public TestUrlService(AmazonS3 s3Client, Jdbi jdbi) {
         this.s3Client = s3Client;
         this.jdbi = jdbi;

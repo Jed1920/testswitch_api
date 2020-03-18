@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ContextConfiguration(classes = AppTestConfiguration.class)
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles({"testDataSource", "testAmazonS3","testUIUrl"})
+@ActiveProfiles({"testDataSource", "testAmazonS3","testUIUrl","testBucketName"})
 public class ApplicantIntegrationTest {
 
     Application application1 = new Application("James May", "jimmyM@top.ge", "0284819123", "INTERMEDIATE");

@@ -1,10 +1,12 @@
 package com.testswitch_api.testswitchapi.controllers;
 
+import com.amazonaws.services.s3.model.PutObjectResult;
 import com.testswitch_api.testswitchapi.enums.ApplicationState;
 import com.testswitch_api.testswitchapi.models.*;
 import com.testswitch_api.testswitchapi.services.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +29,7 @@ public class ApplicantController {
     private String uiUrl;
 
     @Autowired
-    public ApplicantController(ApplicationService applicationService, TestUrlService testUrlService, EmailService emailService, UploadService uploadService, String uiUrl) {
+    public ApplicantController(ApplicationService applicationService, TestUrlService testUrlService, EmailService emailService, UploadService uploadService, @Qualifier("uiUrlString") String uiUrl) {
 
         this.applicationService = applicationService;
         this.testUrlService = testUrlService;
@@ -43,7 +45,8 @@ public class ApplicantController {
         applicationService.addApplicant(application, cvAvailable);
         if (cvAvailable) {
             int applicationId = applicationService.getLastApplicantEntry();
-            uploadService.uploadFile(application.getName(), applicationId, cvMultiFile);
+            PutObjectResult result = uploadService.uploadFile(application.getName(), applicationId, cvMultiFile);
+            return ResponseEntity.ok().body(result.getETag());
         }
         return ResponseEntity.ok().build();
     }
