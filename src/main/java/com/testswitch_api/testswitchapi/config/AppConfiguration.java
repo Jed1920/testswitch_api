@@ -3,6 +3,8 @@ package com.testswitch_api.testswitchapi.config;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.testswitch_api.testswitchapi.models.LoginCredentials;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.jdbi.v3.core.Jdbi;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -17,12 +19,14 @@ import javax.sql.DataSource;
 @Configuration
 public class AppConfiguration {
 
+    private Dotenv dotenv = Dotenv.load();
+
     @Bean
     @Profile("productionDataSource")
     public DataSource getDataSource() {
         return DataSourceBuilder.create()
                 .driverClassName("org.postgresql.Driver")
-                .url(System.getenv("DATABASE_URL"))
+                .url(dotenv.get("DATABASE_URL"))
                 .username("postgres")
                 .password("techswitch")
                 .build();
@@ -49,7 +53,7 @@ public class AppConfiguration {
         mailSender.setPort(587);
 
         mailSender.setUsername("webapp1920@gmail.com");
-        mailSender.setPassword(System.getenv("GOOGLE_APP_PASSWORD"));
+        mailSender.setPassword(dotenv.get("GOOGLE_APP_PASSWORD"));
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
@@ -63,12 +67,21 @@ public class AppConfiguration {
     @Bean("uiUrlString")
     @Profile("productionUIUrl")
     public String getUIUrl() {
-        return System.getenv("UI_URL");
+        return dotenv.get("UI_URL");
     }
 
     @Bean("s3BucketName")
     @Profile("productionBucketName")
     public String getS3BucketName() {
-        return System.getenv("AWS_BUCKET_NAME");
+        return dotenv.get("AWS_BUCKET_NAME");
+    }
+
+    @Bean
+    @Profile("productionLoginCredentials")
+    public LoginCredentials serverCredentials(){
+        LoginCredentials loginCredentials = new LoginCredentials();
+        loginCredentials.setUsername(dotenv.get("SERVER_USERNAME"));
+        loginCredentials.setPassword(dotenv.get("SERVER_PASSWORD"));
+        return loginCredentials;
     }
 }
