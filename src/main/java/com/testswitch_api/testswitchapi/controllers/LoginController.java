@@ -24,13 +24,9 @@ public class LoginController {
         this.masterCredentials = masterCredentials;
     }
 
-    @PostMapping(value = "/initial_login", consumes = {"application/json"})
+    @PostMapping(consumes = {"application/json"})
     public ResponseEntity authenticateLoginCredentials(@RequestBody LoginCredentials credentials) {
         LoginResponse loginResponse = new LoginResponse();
-        System.out.println(credentials.getUsername());
-        System.out.println(credentials.getPassword());
-        System.out.println(masterCredentials.getUsername());
-        System.out.println(masterCredentials.getPassword());
         if (credentials.getUsername().equals(masterCredentials.getUsername()) && credentials.getPassword().equals(masterCredentials.getPassword())) {
             loginResponse.setToken(loginService.generateToken());
             loginResponse.setLoggedIn(true);
