@@ -78,7 +78,7 @@ public class AppConfiguration {
 
     @Bean
     @Profile("productionLoginCredentials")
-    public LoginCredentials serverCredentials(){
+    public LoginCredentials serverCredentials() {
         LoginCredentials loginCredentials = new LoginCredentials();
         loginCredentials.setUsername(dotenv.get("SERVER_USERNAME"));
         loginCredentials.setPassword(dotenv.get("SERVER_PASSWORD"));
