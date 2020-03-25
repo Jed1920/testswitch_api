@@ -63,21 +63,23 @@ public class ApplicantIntegrationTest {
 
     @Test
     public void addApplicantEndpointReturnsStatusOk() throws Exception {
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(new Application("John Cena", "itsjohn@cena.com", "03212553422", "BEGINNER"));
         mockMvc.perform(post("/application/add")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonString))
+                .contentType("multipart/form-data")
+                .param("name", "John Cena")
+                .param("email", "itsjohn@cena.com")
+                .param("contactInfo", "03212553422")
+                .param("experience", "BEGINNER"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
     public void addInvalidApplicantReturnsStatusBad() throws Exception {
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(new Application("", "itsjohn@cena.com", "03212553422", "BEGINNER"));
         mockMvc.perform(post("/application/add")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonString))
+                .contentType("multipart/form-data")
+                .param("name", "")
+                .param("email", "itsjohn@cena.com")
+                .param("contactInfo", "03212553422")
+                .param("experience", "BEGINNER"))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 

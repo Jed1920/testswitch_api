@@ -39,8 +39,8 @@ public class ApplicantController {
 
     }
 
-    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity storeApplication(@Valid @RequestBody Application application, @ModelAttribute MultipartFile cvMultiFile) throws IOException {
+    @PostMapping(value = "/add", consumes = {"multipart/form-data"} )
+    public ResponseEntity storeApplication(@Valid @ModelAttribute Application application, @ModelAttribute MultipartFile cvMultiFile) throws IOException {
         Boolean cvAvailable = cvMultiFile != null;
         applicationService.addApplicant(application, cvAvailable);
         if (cvAvailable) {
